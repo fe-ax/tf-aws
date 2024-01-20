@@ -59,11 +59,15 @@ jobs:
         run: | 
           echo ${{ needs.plan.outputs.returncode }}
 
+      - name: test
+        run: |
+          echo ${{ github.ref }}
+
   apply:
     runs-on: ubuntu-latest
     environment: production
     needs: plan
-    if:
+    if: |
       needs.plan.outputs.returncode == '2' &&
       github.ref == 'refs/heads/main'
     defaults:
