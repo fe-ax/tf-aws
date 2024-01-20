@@ -50,6 +50,7 @@ jobs:
           set +e
           terraform plan -no-color -detailed-exitcode
           export returncode=$?
+          echo "returncode=$returncode" 
           echo "returncode=$returncode" >> $GITHUB_OUTPUT
           if [ $returncode -eq 1 ]; then
             echo "Plan failed"
