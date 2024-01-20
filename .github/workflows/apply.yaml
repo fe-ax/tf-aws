@@ -59,10 +59,6 @@ jobs:
         run: | 
           echo ${{ needs.plan.outputs.returncode }}
 
-      - name: test
-        run: |
-          echo ${{ github.ref }}
-
   apply:
     runs-on: ubuntu-latest
     environment: production
