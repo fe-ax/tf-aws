@@ -47,9 +47,9 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
+          set +e
           terraform plan -no-color -detailed-exitcode
-          returncode=$?
-          echo "returncode=$returncode"
+          export returncode=$?
           echo "returncode=$returncode" >> $GITHUB_OUTPUT
           if [ $returncode -eq 1 ]; then
             echo "Plan failed"
@@ -62,17 +62,14 @@ jobs:
     environment: production
     needs: plan
     if: |
-      github.ref == 'refs/heads/dev'
+      github.ref == 'refs/heads/dev' &&
+      needs.plan.outputs.returncode == 2
     defaults:
       run:
         working-directory: ./terraform
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
-
-      - name: test
-        run: echo ${{ needs.plan.outputs.returncode }}
-
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
