@@ -46,10 +46,13 @@ jobs:
         id: plan
         run: |
           terraform plan -no-color -detailed-exitcode
-          echo "returncode=$?" >> $GITHUB_OUTPUT
-      - name: test
-        run: | 
-          echo ${{ needs.plan.outputs.returncode }}
+          export returncode=$?
+          echo "returncode=$returncode" >> $GITHUB_OUTPUT
+          if [ $returncode -eq 1 ]; then
+            echo "Plan failed"
+            exit 1
+          fi
+          exit 0
 
   apply:
     runs-on: ubuntu-latest
