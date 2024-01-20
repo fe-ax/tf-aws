@@ -53,6 +53,11 @@ jobs:
             exit 1
           fi
           exit 0
+          echo "returncode=$?" >> $GITHUB_OUTPUT
+
+      - name: test
+        run: | 
+          echo ${{ needs.plan.outputs.returncode }}
 
   apply:
     runs-on: ubuntu-latest
