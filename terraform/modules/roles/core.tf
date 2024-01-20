@@ -36,9 +36,9 @@ data "aws_iam_policy_document" "core_trusted_entities_policy_document" {
     }
 
     condition {
-      test     = "StringEquals"
+      test     = "ForAnyValue:StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo: fe-ax/tf-aws:ref:refs/heads/main", "repo: fe-ax/tf-aws:ref:refs/heads/dev"]
+      values   = ["repo:fe-ax/tf-aws:environment:prod"]
     }
 
     condition {
