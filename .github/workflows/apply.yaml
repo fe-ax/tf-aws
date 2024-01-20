@@ -45,12 +45,15 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color
+        run: |
+          terraform plan -no-color
+          echo "returncode=$?" >> $GITHUB_OUTPUT
 
   apply:
     runs-on: ubuntu-latest
     environment: production
     needs: plan
+    if: needs.plan.outputs.returncode == '2'
     defaults:
       run:
         working-directory: ./terraform
