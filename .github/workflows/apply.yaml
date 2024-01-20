@@ -10,17 +10,66 @@ permissions:
   id-token: write   # This is required for requesting the JWT
   contents: read    # This is required for actions/checkout
 jobs:
-  apply-config:
+  plan:
     runs-on: ubuntu-latest
-    environment: production
+    environment: prerun
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
+
+      # TODO: Change to a read-only role
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/core_role
           role-session-name: github-session-role
           aws-region: ${{ env.AWS_REGION }}
-      - name: Test AWS CLI
-        run: aws sts get-caller-identity
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+
+  apply:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/core_role
+          role-session-name: github-session-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve
+        continue-on-error: true
