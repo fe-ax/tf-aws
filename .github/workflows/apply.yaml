@@ -52,7 +52,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: plan
-    if: needs.plan.outputs.returncode == '2'
+    if:
+      needs.plan.outputs.returncode == '2' &&
+      github.ref == 'refs/heads/main'
     defaults:
       run:
         working-directory: ./terraform
