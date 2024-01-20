@@ -47,6 +47,7 @@ jobs:
   apply:
     runs-on: ubuntu-latest
     environment: production
+    needs: plan
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
