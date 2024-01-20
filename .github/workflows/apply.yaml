@@ -56,10 +56,6 @@ jobs:
           echo "returncode=$?" >> $GITHUB_OUTPUT
 
       - name: test
-        run: | 
-          echo ${{ needs.plan.outputs.returncode }}
-
-      - name: test
         run: |
           echo ${{ github.ref }}
 
