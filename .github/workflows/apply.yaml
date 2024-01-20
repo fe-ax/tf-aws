@@ -64,12 +64,14 @@ jobs:
     environment: production
     needs: plan
     if: |
-      needs.plan.outputs.returncode == '2' &&
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/dev'
     defaults:
       run:
         working-directory: ./terraform
     steps:
+      - name: show outputs
+        run: |
+          echo ${{ steps.plan.outputs.returncode }}
       - name: Git clone the repository
         uses: actions/checkout@v4
 
