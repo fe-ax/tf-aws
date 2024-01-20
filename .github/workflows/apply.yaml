@@ -53,12 +53,17 @@ jobs:
             exit 1
           fi
           exit 0
+          echo "returncode=$?" >> $GITHUB_OUTPUT
+
+      - name: test
+        run: |
+          echo ${{ github.ref }}
 
   apply:
     runs-on: ubuntu-latest
     environment: production
     needs: plan
-    if:
+    if: |
       needs.plan.outputs.returncode == '2' &&
       github.ref == 'refs/heads/main'
     defaults:
