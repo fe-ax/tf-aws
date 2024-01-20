@@ -9,3 +9,8 @@ variable "aws_profile" {
   type        = string
   default     = null
 }
+
+variable "oidc_id_github" {
+  description = "Github OIDC ID"
+  type        = string
+}

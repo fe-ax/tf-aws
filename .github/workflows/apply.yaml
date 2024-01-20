@@ -1,0 +1,86 @@
+# Sample workflow to access AWS resources when workflow is tied to branch
+# The workflow Creates static website using aws s3
+name: Apply AWS core config
+on:
+  push
+env:
+  AWS_REGION : "eu-central-1"
+# permission can be added at job level or workflow level
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    environment: prerun
+    defaults:
+      run:
+        working-directory: ./terraform
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      # TODO: Change to a read-only role
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/core_role
+          role-session-name: github-session-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan -no-color
+          echo "returncode=$?" >> $GITHUB_OUTPUT
+
+  apply:
+    runs-on: ubuntu-latest
+    environment: production
+    needs: plan
+    if:
+      needs.plan.outputs.returncode == '2' &&
+      github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: ./terraform
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/core_role
+          role-session-name: github-session-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve
+        continue-on-error: true
