@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: plan
     outputs:
-      returncode: ${{ steps.plan.outputs.exitcode }}
+      returncode: ${{ steps.plan-step.outputs.exitcode }}
     defaults:
       run:
         working-directory: ./terraform
@@ -45,9 +45,14 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform Plan
-        id: plan
+        id: plan-step
         run: terraform plan -no-color -detailed-exitcode
         continue-on-error: true
+      
+      - name: Fail if terraform plan failed
+        id: check-plan
+        if: steps.plan-step.outputs.returncode == 1
+        run: exit 1
 
   apply:
     runs-on: ubuntu-latest
