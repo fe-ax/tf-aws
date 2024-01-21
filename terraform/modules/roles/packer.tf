@@ -1,35 +1,3 @@
-
-
-####################
-# User and group for packer
-####################
-
-# Create the user for packer
-
-resource "aws_iam_user" "packer_user" {
-  name = "packer_user"
-  path = "/"
-}
-
-# Create the group for packer
-
-resource "aws_iam_group" "packer_group" {
-  name = "packer_group"
-  path = "/"
-}
-
-# Add the user to the group
-
-resource "aws_iam_group_membership" "packer_group_membership" {
-  name = "packer_group_membership"
-
-  users = [
-    "${aws_iam_user.packer_user.name}",
-  ]
-
-  group = aws_iam_group.packer_group.name
-}
-
 ####################
 # The packer role which can be assumed by the packer user or an EC2 instance
 #
@@ -41,14 +9,6 @@ resource "aws_iam_group_membership" "packer_group_membership" {
 # This trusted entities policy document specifies which user, or specific EC2 instances, can assume the packer role below.
 
 data "aws_iam_policy_document" "packer_trusted_entities_policy_document" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_iam_user.packer_user.arn]
-    }
-  }
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
 
@@ -170,28 +130,3 @@ resource "aws_iam_policy" "assume_packer_role_policy" {
   description = "The policy to assume the role for Packer"
   policy      = data.aws_iam_policy_document.assume_packer_role_policy_document.json
 }
-
-# Attach the policy above to the group to allow the group to assume the packer role
-
-resource "aws_iam_group_policy_attachment" "assume_packer_role_policy_attachment" {
-  group      = aws_iam_group.packer_group.name
-  policy_arn = aws_iam_policy.assume_packer_role_policy.arn
-}
-
-####################
-# Create the access key for packer and save it to a file for packer to use
-####################
-
-resource "aws_iam_access_key" "packer_access_key" {
-  user = aws_iam_user.packer_user.name
-}
-
-# resource "local_sensitive_file" "packer_env_file" {
-#   filename = "../packer/packer.pkrvar.hcl"
-#   content  = <<-EOF
-# packer_access_key = "${aws_iam_access_key.packer_access_key.id}"
-# packer_secret_key = "${aws_iam_access_key.packer_access_key.secret}"
-# packer_region     = "${var.aws_region}"
-# packer_role_arn   = "${aws_iam_role.packer_role.arn}"
-# EOF
-# }
