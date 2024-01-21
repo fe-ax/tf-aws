@@ -39,8 +39,8 @@ data "aws_iam_policy_document" "core_trusted_entities_policy_document" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:fe-ax/tf-aws:environment:plan",
-        "repo:fe-ax/tf-aws:environment:apply"
+        "repo:${local.allowed_repo}:environment:plan",
+        "repo:${local.allowed_repo}:environment:apply"
       ]
     }
 
