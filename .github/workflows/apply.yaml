@@ -48,6 +48,10 @@ jobs:
         id: plan
         run: terraform plan -no-color -detailed-exitcode
         continue-on-error: true
+      
+      - name: Set output
+        run: echo "asd ${{ steps.plan.outputs.returncode }}"
+
 
   apply:
     runs-on: ubuntu-latest
