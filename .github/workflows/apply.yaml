@@ -13,6 +13,8 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     environment: prerun
+    outputs:
+      returncode: ${{ steps.plan.outputs.exitcode }}
     defaults:
       run:
         working-directory: ./terraform
@@ -44,28 +46,16 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: |
-          terraform plan -no-color -detailed-exitcode
-          export returncode=$?
-          echo "returncode=$returncode" >> $GITHUB_OUTPUT
-          if [ $returncode -eq 1 ]; then
-            echo "Plan failed"
-            exit 1
-          fi
-          exit 0
-          echo "returncode=$?" >> $GITHUB_OUTPUT
-
-      - name: test
-        run: |
-          echo ${{ github.ref }}
+        run: terraform plan -no-color -detailed-exitcode
+        continue-on-error: true
 
   apply:
     runs-on: ubuntu-latest
     environment: production
     needs: plan
     if: |
-      needs.plan.outputs.returncode == '2' &&
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/main' &&
+      needs.plan.outputs.returncode == 2
     defaults:
       run:
         working-directory: ./terraform
