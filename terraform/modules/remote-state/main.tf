@@ -23,7 +23,8 @@ resource "random_id" "tfstate" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "tfstate-${random_id.tfstate.hex}"
+  bucket        = "tfstate-${random_id.tfstate.hex}"
+  force_destroy = true
 
   lifecycle {
     prevent_destroy = true

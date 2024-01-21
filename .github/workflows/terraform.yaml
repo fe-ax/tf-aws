@@ -1,5 +1,5 @@
-# Sample workflow to access AWS resources when workflow is tied to branch
-# The workflow Creates static website using aws s3
+# This workflow will run terraform plan and apply
+
 name: Apply AWS core config
 on:
   push
@@ -12,9 +12,9 @@ permissions:
 jobs:
   plan:
     runs-on: ubuntu-latest
-    environment: prerun
+    environment: plan
     outputs:
-      returncode: ${{ steps.plan.outputs.exitcode }}
+      returncode: ${{ steps.plan-step.outputs.exitcode }}
     defaults:
       run:
         working-directory: ./terraform
@@ -45,13 +45,18 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform Plan
-        id: plan
+        id: plan-step
         run: terraform plan -no-color -detailed-exitcode
         continue-on-error: true
+      
+      - name: Fail if terraform plan failed
+        id: check-plan
+        if: steps.plan-step.outputs.returncode == 1
+        run: exit 1
 
   apply:
     runs-on: ubuntu-latest
-    environment: production
+    environment: apply
     needs: plan
     if: |
       github.ref == 'refs/heads/main' &&
