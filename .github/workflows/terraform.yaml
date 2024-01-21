@@ -38,7 +38,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: terraform init -lock-timeout=300s
 
       - name: Terraform Validate
         id: validate
@@ -46,12 +46,12 @@ jobs:
 
       - name: Terraform Plan
         id: plan-step
-        run: terraform plan -no-color -detailed-exitcode
+        run: terraform plan -no-color -detailed-exitcode -lock-timeout=300s
         continue-on-error: true
-      
+
       - name: Fail if terraform plan failed
         id: check-plan
-        if: steps.plan-step.outputs.returncode == 1
+        if: steps.plan-step.outputs.exitcode == 1
         run: exit 1
 
   apply:
@@ -88,5 +88,5 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -lock-timeout=300s
         continue-on-error: true
