@@ -54,7 +54,7 @@ jobs:
     environment: production
     needs: plan
     if: |
-      github.ref == 'refs/heads/dev' &&
+      github.ref == 'refs/heads/main' &&
       needs.plan.outputs.returncode == 2
     defaults:
       run:
