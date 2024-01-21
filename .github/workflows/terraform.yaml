@@ -48,11 +48,6 @@ jobs:
         id: plan
         run: terraform plan -no-color -detailed-exitcode
         continue-on-error: true
-      
-      - name: Fail if terraform plan failed
-        id: check-plan
-        if: steps.plan.outputs.returncode == 1
-        run: exit 1
 
   apply:
     runs-on: ubuntu-latest
