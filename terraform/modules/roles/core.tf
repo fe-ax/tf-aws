@@ -1,32 +1,4 @@
-resource "aws_iam_user" "core_user" {
-  name = "core_user"
-  path = "/"
-}
-
-resource "aws_iam_group" "core_group" {
-  name = "core_group"
-  path = "/"
-}
-
-resource "aws_iam_group_membership" "core_group_membership" {
-  name = "core_group_membership"
-
-  users = [
-    "${aws_iam_user.core_user.name}",
-  ]
-
-  group = aws_iam_group.core_group.name
-}
-
 data "aws_iam_policy_document" "core_trusted_entities_policy_document" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_iam_user.core_user.arn]
-    }
-  }
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
 
@@ -91,13 +63,4 @@ resource "aws_iam_policy" "assume_core_role_policy" {
   path        = "/"
   description = "The policy to assume the role for the core"
   policy      = data.aws_iam_policy_document.assume_core_role_policy_document.json
-}
-
-resource "aws_iam_group_policy_attachment" "assume_core_role_policy_attachment" {
-  group      = aws_iam_group.core_group.name
-  policy_arn = aws_iam_policy.assume_core_role_policy.arn
-}
-
-resource "aws_iam_access_key" "core_access_key" {
-  user = aws_iam_user.core_user.name
 }
