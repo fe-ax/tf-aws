@@ -12,7 +12,7 @@ permissions:
 jobs:
   plan:
     runs-on: ubuntu-latest
-    environment: prerun
+    environment: plan
     outputs:
       returncode: ${{ steps.plan.outputs.exitcode }}
     defaults:
@@ -55,7 +55,7 @@ jobs:
 
   apply:
     runs-on: ubuntu-latest
-    environment: production
+    environment: apply
     needs: plan
     if: |
       github.ref == 'refs/heads/main' &&
