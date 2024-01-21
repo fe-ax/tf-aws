@@ -48,6 +48,7 @@ jobs:
         id: plan
         run: |
           set +e
+          terraform -v
           terraform plan -no-color -detailed-exitcode
           false
           export returncode=$?
