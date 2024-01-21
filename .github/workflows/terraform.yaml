@@ -49,9 +49,13 @@ jobs:
         run: terraform plan -no-color -detailed-exitcode
         continue-on-error: true
       
+      - name: test
+        id: test
+        run: echo "${{ steps.plan-step.outputs.exitcode }}"
+
       - name: Fail if terraform plan failed
         id: check-plan
-        if: steps.plan-step.outputs.returncode == 1
+        if: steps.plan-step.outputs.exitcode == 1
         run: exit 1
 
   apply:
