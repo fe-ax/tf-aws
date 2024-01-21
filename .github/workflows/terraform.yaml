@@ -48,10 +48,6 @@ jobs:
         id: plan-step
         run: terraform plan -no-color -detailed-exitcode
         continue-on-error: true
-      
-      - name: test
-        id: test
-        run: echo "${{ steps.plan-step.outputs.exitcode }}"
 
       - name: Fail if terraform plan failed
         id: check-plan
