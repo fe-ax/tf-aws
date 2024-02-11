@@ -2,7 +2,7 @@
 
 name: Apply AWS core config
 on:
-  push
+  push: {}
   repository_dispatch:
     types: [trigger-workflow]
 env:
