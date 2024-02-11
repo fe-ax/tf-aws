@@ -2,7 +2,9 @@
 
 name: Apply AWS core config
 on:
-  push
+  push: {}
+  repository_dispatch:
+    types: [trigger-workflow]
 env:
   AWS_REGION : "eu-central-1"
 # permission can be added at job level or workflow level
