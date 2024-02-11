@@ -26,7 +26,7 @@ jobs:
 
       # TODO: Change to a read-only role
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/core_role
           role-session-name: github-session-role
