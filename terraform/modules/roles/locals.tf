@@ -1,4 +1,6 @@
 locals {
-  # Make this a loop
-  allowed_repo = "fe-ax/tf-aws"
+  allowed_repos = [
+    "repo:fe-ax/tf-aws",
+    "repo:fe-ax/tf-testingstuff",
+  ]
 }
