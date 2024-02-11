@@ -10,10 +10,7 @@ data "aws_iam_policy_document" "core_trusted_entities_policy_document" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values = [
-        "repo:${local.allowed_repo}:environment:plan",
-        "repo:${local.allowed_repo}:environment:apply"
-      ]
+      values = local.allowed_repos
     }
 
     condition {
