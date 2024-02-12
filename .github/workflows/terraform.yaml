@@ -7,6 +7,10 @@ on:
     secrets:
       ACCOUNT_ID:
         required: true
+  workflow_dispatch:
+    inputs:
+      ACCOUNT_ID:
+        required: true
 env:
   AWS_REGION : "eu-central-1"
 # permission can be added at job level or workflow level
@@ -25,6 +29,9 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
+        with:
+          repository: fe-ax/tf-aws
+          ref: ${{ github.repository == 'fe-ax/tf-aws' && 'main' || '' }}
 
       # TODO: Change to a read-only role
       - name: configure aws credentials
@@ -64,6 +71,7 @@ jobs:
     needs: plan
     if: |
       github.ref == 'refs/heads/main' &&
+      github.repository == 'fe-ax/tf-aws' &&
       needs.plan.outputs.returncode == 2
     defaults:
       run:
