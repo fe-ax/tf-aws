@@ -27,12 +27,11 @@ jobs:
       run:
         working-directory: ./terraform
     steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
       - name: asd
         run: |
           printenv
-      - name: Git clone the repository
-        uses: actions/checkout@v4
-
       # TODO: Change to a read-only role
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
