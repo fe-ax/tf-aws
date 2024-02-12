@@ -7,6 +7,10 @@ on:
     secrets:
       ACCOUNT_ID:
         required: true
+  workflow_dispatch:
+    inputs:
+      ACCOUNT_ID:
+        required: true
 env:
   AWS_REGION : "eu-central-1"
 # permission can be added at job level or workflow level
@@ -17,6 +21,8 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     environment: plan
+    if: |
+      github.workflow_ref == null
     outputs:
       returncode: ${{ steps.plan-step.outputs.exitcode }}
     defaults:
