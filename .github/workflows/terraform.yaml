@@ -64,6 +64,7 @@ jobs:
     needs: plan
     if: |
       github.ref == 'refs/heads/main' &&
+      github.workflow_ref == null &&
       needs.plan.outputs.returncode == 2
     defaults:
       run:
