@@ -34,7 +34,7 @@ jobs:
           ref: ${{ github.repository == 'fe-ax/tf-aws' && 'main' || '' }}
 
       # TODO: Change to a read-only role
-      - name: configure aws credentials 
+      - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/core_role
