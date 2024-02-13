@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: fe-ax/tf-aws
-          #ref: ${{ github.repository == 'fe-ax/tf-aws' && '' || 'main' }}
+          ref: ${{ github.repository == 'fe-ax/tf-aws' && null || 'main' }}
 
       # TODO: Change to a read-only role
       - name: configure aws credentials
