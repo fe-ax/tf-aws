@@ -43,6 +43,13 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
+      - name: Setup Terragrunt v0.38.4
+        run: |
+          # MAKE VERSION ENVIRONMENT VARIABLE
+          sudo wget -q -O /bin/terragrunt "https://github.com/gruntwork-io/terragrunt/releases/download/v0.55.1/terragrunt_linux_amd64"
+          sudo chmod +x /bin/terragrunt
+          terragrunt -v
+
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
