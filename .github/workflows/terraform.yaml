@@ -23,15 +23,12 @@ jobs:
     environment: plan
     outputs:
       returncode: ${{ steps.plan-step.outputs.exitcode }}
-    defaults:
-      run:
-        working-directory: ./terraform
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
         with:
           repository: fe-ax/tf-aws
-          ref: ${{ github.repository == 'fe-ax/tf-aws' && 'main' || '' }}
+          ref: ${{ github.repository == 'fe-ax/tf-aws' && null || null }}
 
       # TODO: Change to a read-only role
       - name: configure aws credentials
@@ -43,24 +40,31 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform fmt
+      - name: Setup Terragrunt v0.55.1
+        run: |
+          # MAKE VERSION ENVIRONMENT VARIABLE
+          sudo wget -q -O /usr/bin/terragrunt "https://github.com/gruntwork-io/terragrunt/releases/download/v0.55.1/terragrunt_linux_amd64"
+          sudo chmod +x /usr/bin/terragrunt
+          terragrunt -v
+
+      - name: Terragrunt fmt
         id: fmt
-        run: terraform fmt -check
+        run: terragrunt fmt -check
 
-      - name: Terraform Init
+      - name: Terragrunt Init
         id: init
-        run: terraform init -lock-timeout=300s
+        run: terragrunt init -lock-timeout=300s
 
-      - name: Terraform Validate
+      - name: Terragrunt Validate
         id: validate
-        run: terraform validate -no-color
+        run: terragrunt validate -no-color
 
-      - name: Terraform Plan
+      - name: Terragrunt Plan
         id: plan-step
-        run: terraform plan -no-color -detailed-exitcode -lock-timeout=300s
+        run: terragrunt plan -no-color -detailed-exitcode -lock-timeout=300s
         continue-on-error: true
 
-      - name: Fail if terraform plan failed
+      - name: Fail if terragrunt plan failed
         id: check-plan
         if: steps.plan-step.outputs.exitcode == 1
         run: exit 1
