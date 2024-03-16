@@ -18,9 +18,12 @@ data "aws_iam_policy_document" "packer_trusted_entities_policy_document" {
     }
 
     condition {
-      test     = "StringEquals"
+      test     = "ForAnyValue:StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo: fe-ax/packer-blog:ref:refs/heads/production"]
+      values = [
+        "repo:fe-ax/packer-blog:*",
+        "repo:fe-ax/ami-image-builder:*",
+      ]
     }
 
     condition {

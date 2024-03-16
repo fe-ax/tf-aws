@@ -7,9 +7,13 @@ on:
     secrets:
       ACCOUNT_ID:
         required: true
+      ROLE_NAME:
+        required: true
   workflow_dispatch:
     inputs:
       ACCOUNT_ID:
+        required: true
+      ROLE_NAME:
         required: true
 env:
   AWS_REGION : "eu-central-1"
@@ -37,7 +41,7 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/core_role
+          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
           role-session-name: github-session-role
           aws-region: ${{ env.AWS_REGION }}
 
@@ -83,7 +87,7 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/core_role
+          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
           role-session-name: github-session-role
           aws-region: ${{ env.AWS_REGION }}
 

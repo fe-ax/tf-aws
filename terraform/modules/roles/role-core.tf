@@ -10,7 +10,10 @@ data "aws_iam_policy_document" "core_trusted_entities_policy_document" {
     condition {
       test     = "ForAnyValue:StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values = local.allowed_repos
+      values = [
+        "repo:fe-ax/tf-aws:*",
+        "repo:fe-ax/tf-testingstuff:*",
+      ]
     }
 
     condition {
