@@ -7,14 +7,7 @@ on:
     secrets:
       ACCOUNT_ID:
         required: true
-      ROLE_NAME:
-        required: true
-  workflow_dispatch:
-    inputs:
-      ACCOUNT_ID:
-        required: true
-      ROLE_NAME:
-        required: true
+  workflow_dispatch: {}
 env:
   AWS_REGION : "eu-central-1"
 # permission can be added at job level or workflow level
