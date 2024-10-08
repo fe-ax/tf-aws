@@ -1,3 +1,3 @@
 # Core Terraform AWS config
 
-In this repo I gather core AWS config to apply with Terraform without GHA.
+This repo serves as an example for a blog post
